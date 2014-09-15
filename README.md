@@ -1,18 +1,20 @@
+<bean id="vendorProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="properties">
+        <props>
+            <prop key="SQL Server">sqlserver</prop>
+            <prop key="DB2">db2</prop>
+            <prop key="Oracle">oracle</prop>
+            <prop key="MySQL">mysql</prop>
+        </props>
+    </property>
+</bean>
 
-olean.valueOf(vars.get("DEBUG"))) {
-  for (a: SampleResult.getAssertionResults()) {
-      if (a.isError() || a.isFailure()) {
-            log.error(Thread.currentThread().getName()+": "+SampleLabel+": Assertion failed for response: " + new String((byte[]) ResponseData));
-	        }
-		  }
-		  }
+<bean id="databaseIdProvider" class="org.apache.ibatis.mapping.VendorDatabaseIdProvider">
+    <property name="properties" ref="vendorProperties"/>
+</bean>
 
-
-
-		  if (Boolean.valueOf(vars.get("DEBUG"))) {
-		    for (a: SampleResult.getAssertionResults()) {
-		        if (a.isError() || a.isFailure()) {
-			      log.error(Thread.currentThread().getName()+": "+SampleLabel+": Assertion failed for response: " + new String((byte[]) ResponseData));
-			          }
-				    }
-				    }
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource" />
+    <property name="mapperLocations" value="classpath*:sample/config/mappers/**/*.xml" />
+    <property name="databaseIdProvider" ref="databaseIdProvider"/>
+</bean>
